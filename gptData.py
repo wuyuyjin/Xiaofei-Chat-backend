@@ -1,0 +1,2 @@
+global answer
+answer = ""
