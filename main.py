@@ -7,7 +7,7 @@ from werkzeug.utils import secure_filename
 
 from tushengwen import tushengwen
 from wenshengtu import wenshengtu
-
+from upload_to_qiniu import upload_to_qiniu
 
 app = Flask(__name__)
 CORS(app)  # 允许跨域请求
@@ -56,6 +56,10 @@ def tushengwen_data():
         app.config['UPLOAD_FOLDER'] = 'public'  # 设置上传文件的目标文件夹路径
         file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
+        filePath = f"public/{filename}"
+        upload_to_qiniu(filePath)
+        # upload_to_qiniu()
+        print("file:",file)
         tushengwen(content,filename,my_callback)
 
         if dataResult:

@@ -11,7 +11,6 @@ from time import mktime
 from urllib.parse import urlencode
 from wsgiref.handlers import format_date_time
 import websocket
-# 图像理解
 
 appid = "4516d816"
 api_secret = "ZjRkZjZiOTU5Y2VhNTg3MjZmMDRmMWI0"
@@ -73,6 +72,7 @@ def run(ws, *args):
 
 
 def on_message(ws, message):
+    global answer
     data = json.loads(message)
     code = data['header']['code']
     if code != 0:
@@ -83,7 +83,6 @@ def on_message(ws, message):
         status = choices["status"]
         content = choices["text"][0]["content"]
         print(content, end="")
-        global answer
         answer += content
         if status == 2:  # 如果回复状态为结束
             ws.close()
@@ -146,7 +145,9 @@ def checklen(text):
 
 
 def tushengwen(content, imageBase, callback):
+    global text
     global answer
+    text = []  # 清空全局变量
     answer = ""
 
     if imageBase.startswith('http'):  # 检查 imageBase 是否是 URL
@@ -178,7 +179,7 @@ def tushengwen(content, imageBase, callback):
     question = checklen(getText("user", content))
     databaseString = str(base64.b64encode(imagedata))
 
-    print("String:",databaseString)
+    # print("String:", databaseString)
     print("答:", end="")
     main(appid, api_key, api_secret, imageunderstanding_url, question)
     callback(answer)  # 将结果传递给回调函数
