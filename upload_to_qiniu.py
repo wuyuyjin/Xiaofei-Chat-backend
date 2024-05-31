@@ -7,7 +7,7 @@ def upload_to_qiniu(local_file_path):
     secret_key = 'ZGbvi12n4-AIy7xvn60uNk0kDE-qYbtzTKSEAXTm'
 
     # 设置要上传的七牛云空间名称
-    bucket_name = 'xiaofei-chat'
+    bucket_name = 'wyjchat'
     # 构建鉴权对象
     q = Auth(access_key, secret_key)
 

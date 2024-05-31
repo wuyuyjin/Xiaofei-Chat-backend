@@ -25,11 +25,18 @@ def wenshengtu_data():
         if data:
             # 假设请求包含一个名为 'name' 的字段
             content = data.get('content')
-            wenshengtu(content)
-            if content:
-                response = {'message': f'Hello, {content}! Your request was successful.'}
+            wenshengtu(content,my_callback)
 
-                return jsonify(response), 200
+            upload_to_qiniu(dataResult)
+            if content:
+                # response = {'message': f'{content}'}
+                if dataResult:
+                    # 响应消息
+                    response = {
+                        'image': f'{dataResult}',
+                    }
+                    return jsonify(response), 200
+                # return jsonify(response), 200
             else:
                 return jsonify({'error': 'content not provided in request.'}), 400
         else:
@@ -58,7 +65,6 @@ def tushengwen_data():
 
         filePath = f"public/{filename}"
         upload_to_qiniu(filePath)
-        # upload_to_qiniu()
         print("file:",file)
         tushengwen(content,filename,my_callback)
 
