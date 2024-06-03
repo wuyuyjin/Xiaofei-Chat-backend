@@ -150,5 +150,5 @@ def wenshengtu(content, callback):
 
 
 # 示例回调函数
-def callback(path):
-    print(f"Callback: Image saved at {path}")
+# def callback(path):
+#     print(f"Callback: Image saved at {path}")

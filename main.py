@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
 
+from shibiewenzi import recognize_text_from_image
 from tushengwen import tushengwen
 from wenshengtu import wenshengtu
 from upload_to_qiniu import upload_to_qiniu
@@ -68,6 +69,36 @@ def tushengwen_data():
         print("file:",file)
         tushengwen(content,filename,my_callback)
 
+        if dataResult:
+            # 响应消息
+            response = {
+                'message': f'{dataResult}',
+            }
+            return jsonify(response), 200
+
+
+@app.route('/wenzishibie', methods=['POST'])
+def wenzishibie_data():
+    if request.method == 'POST':
+        # 检查是否上传了文件和其他数据
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file part in the request'}), 400
+
+        file = request.files['file']
+        content = request.form.get('chat')
+
+        if file.filename == '':
+            return jsonify({'error': 'No selected file'}), 400
+
+        # 处理文件和其他数据
+        filename = secure_filename(file.filename)  # 需要导入 secure_filename 函数
+        app.config['UPLOAD_FOLDER'] = 'public'  # 设置上传文件的目标文件夹路径
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        filePath = f"public/{filename}"
+        upload_to_qiniu(filePath)
+        print("file:", file)
+        recognize_text_from_image(filePath,my_callback)
         if dataResult:
             # 响应消息
             response = {
